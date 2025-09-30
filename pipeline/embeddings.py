@@ -1,4 +1,6 @@
+import contextlib
 import os
+import sys
 
 import numpy as np
 import pandas as pd
@@ -10,6 +12,7 @@ from torchvision import transforms
 from tqdm import tqdm
 
 from .base import CorePlaceStep
+
 
 def get_transform(model_name: str):
     if model_name == "EigenPlaces":
@@ -35,12 +38,16 @@ def get_desc_size(model_name: str):
 
 def get_model(model_name: str):
     if model_name == "EigenPlaces":
-        model = hub.load(
-            "gmberton/eigenplaces",
-            "get_trained_model",
-            backbone="ResNet50",
-            fc_output_dim=2048,
-        )
+        # Suppress stdout and stderr during model loading
+        with open(os.devnull, "w") as devnull, contextlib.redirect_stdout(
+            devnull
+        ), contextlib.redirect_stderr(devnull):
+            model = hub.load(
+                "gmberton/eigenplaces",
+                "get_trained_model",
+                backbone="ResNet50",
+                fc_output_dim=2048,
+            )
         transform = get_transform(model_name)
         desc_size = get_desc_size(model_name)
         return model, transform, desc_size

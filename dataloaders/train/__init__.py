@@ -1,1 +1,1 @@
-from dataloaders.train.coreplaceloader import CorePlaceDataModule
+from dataloaders.train.coreplacedataset import CorePlaceDataset

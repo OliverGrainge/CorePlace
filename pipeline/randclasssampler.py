@@ -1,6 +1,7 @@
+from typing import Union
+
 import numpy as np
 import pandas as pd
-from typing import Union
 
 from .base import CorePlaceStep
 
@@ -30,12 +31,13 @@ class RandomClassSampler(CorePlaceStep):
         filtered = dataconfig[dataconfig["class_id"].isin(sampled_classes)]
         return filtered
 
-    def _filter_num_instances_per_class(self, dataconfig: pd.DataFrame, num_instances_per_class: int):
+    def _filter_num_instances_per_class(
+        self, dataconfig: pd.DataFrame, num_instances_per_class: int
+    ):
         filtered = dataconfig.groupby("class_id", group_keys=False).sample(
             n=num_instances_per_class, replace=False
         )
         return filtered
-        
 
     def _filter_num_instances(self, dataconfig: pd.DataFrame, num_instances: int):
         if len(dataconfig) <= num_instances:
@@ -43,7 +45,9 @@ class RandomClassSampler(CorePlaceStep):
         filtered = dataconfig.sample(n=num_instances, replace=False)
         return filtered
 
-    def _filter_min_instances_per_class(self, dataconfig: pd.DataFrame, min_instances_per_class: int):
+    def _filter_min_instances_per_class(
+        self, dataconfig: pd.DataFrame, min_instances_per_class: int
+    ):
         filtered = dataconfig.groupby("class_id", group_keys=False).filter(
             lambda x: len(x) >= min_instances_per_class
         )
@@ -51,21 +55,21 @@ class RandomClassSampler(CorePlaceStep):
 
     def run(self, pipe_state: dict) -> dict:
         dataconfig = pipe_state["dataconfig"]
-        
+
         if self.num_classes is not None:
             dataconfig = self._filter_num_classes(dataconfig, self.num_classes)
-        
+
         if self.num_instances_per_class is not None:
             dataconfig = self._filter_num_instances_per_class(
                 dataconfig, self.num_instances_per_class
             )
-        
+
         if self.num_instances is not None:
-            assert self.num_instances_per_class is None, (
-                "num_instances and num_instances_per_class cannot be set at the same time"
-            )
+            assert (
+                self.num_instances_per_class is None
+            ), "num_instances and num_instances_per_class cannot be set at the same time"
             dataconfig = self._filter_num_instances(dataconfig, self.num_instances)
-        
+
         if self.min_instances_per_class is not None:
             dataconfig = self._filter_min_instances_per_class(
                 dataconfig, self.min_instances_per_class

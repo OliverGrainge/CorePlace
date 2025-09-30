@@ -2,12 +2,9 @@ from typing import Union
 
 import numpy as np
 import torch
+from tqdm import tqdm
 
 from .base import CorePlaceStep
-import numpy as np
-import torch
-from typing import Union
-from tqdm import tqdm
 
 
 def get_device():
@@ -50,6 +47,12 @@ def mshardness(
         neg_idxs = np.where(neg_mask[i])
         pos_sims = sim_chunk[i, pos_idxs[0]]
         neg_sims = sim_chunk[i, neg_idxs[0]]
+
+        # Handle case where there are no positive or negative samples
+        if len(pos_sims) == 0 or len(neg_sims) == 0:
+            hardness[i] = 0.0
+            continue
+
         max_sim_neg = np.max(neg_sims)
         min_sim_pos = np.min(pos_sims)
         pos_hardness = np.maximum(max_sim_neg - (pos_sims - margin), 0)

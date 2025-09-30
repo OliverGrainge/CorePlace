@@ -3,13 +3,13 @@ from typing import List, Optional
 from pipeline.base import CorePlaceStep
 from pipeline.embeddings import Embeddings
 from pipeline.hardness import ComputeHardness
+from pipeline.hardnesssampler import HardnessSampler
 from pipeline.randclasssampler import RandomClassSampler
 from pipeline.read_gsvcities import ReadGsvCities
-from pipeline.hardnesssampler import HardnessSampler
+
 
 def load_step(step_name: str, **kwargs) -> CorePlaceStep:
     step_name = step_name.lower()
-    print(step_name)
     if step_name == "readgsvcities":
         return ReadGsvCities(**kwargs)
     elif step_name == "embeddings":
@@ -22,6 +22,7 @@ def load_step(step_name: str, **kwargs) -> CorePlaceStep:
         return HardnessSampler(**kwargs)
     else:
         raise ValueError(f"Step {step_name} not found")
+
 
 class CorePlacePipeline:
     def __init__(self, steps: Optional[List[CorePlaceStep]] = None):
