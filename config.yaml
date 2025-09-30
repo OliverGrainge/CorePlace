@@ -1,0 +1,6 @@
+
+
+val_datasets: 
+  Sped: "/Users/olivergrainge/datasets/VPR-datasets-downloader/datasets/sped"
+  Eynsham: "/Users/olivergrainge/datasets/VPR-datasets-downloader/datasets/eynsham"
+  Amstertime: "/Users/olivergrainge/datasets/VPR-datasets-downloader/datasets/amstertime"
