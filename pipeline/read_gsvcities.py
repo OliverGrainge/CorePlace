@@ -73,7 +73,7 @@ def get_dataframes(gsv_cities_path: str, cities: List[str]):
         enumerate(csv_paths), desc="Reading GSVCities", total=len(csv_paths)
     ):
         # Read CSV file
-        city_dataconfig = pd.read_csv(csv_path).sample(frac=1)
+        city_dataconfig = pd.read_csv(csv_path).sample(frac=1, random_state=42)
 
         # Add city prefix to place_id to ensure uniqueness across cities
         if i > 0:
@@ -100,7 +100,7 @@ def get_dataframes(gsv_cities_path: str, cities: List[str]):
     dataconfig = pd.concat(dataconfig_list, ignore_index=True)
 
     # Final shuffle of combined data and reset index
-    dataconfig = dataconfig.sample(frac=1).reset_index(drop=True)
+    dataconfig = dataconfig.sample(frac=1, random_state=42).reset_index(drop=True)
 
     return dataconfig
 
@@ -112,8 +112,13 @@ class ReadGsvCities(CorePlaceStep):
 
     def run(self, pipe_state: dict) -> dict:
         dataconfig = get_dataframes(self.gsv_cities_path, self.cities)
+        print(" ======== GSV Cities ======== ")
+        print(f"Num Classes: {dataconfig['class_id'].nunique()}")
+        print(f"Num Instances: {len(dataconfig)}")
+        print(" ============================= ")
         pipe_state["dataconfig"] = dataconfig
         return pipe_state
+
 
     def __repr__(self) -> str:
         return f"ReadGsvCities(gsv_cities_path={self.gsv_cities_path}, cities={self.cities})"

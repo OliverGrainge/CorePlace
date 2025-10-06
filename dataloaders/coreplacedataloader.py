@@ -1,3 +1,5 @@
+import os
+from collections import defaultdict
 from typing import List, Optional, Union
 
 import matplotlib.pyplot as plt
@@ -6,8 +8,6 @@ import torch
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader
 from torchvision import transforms
-import os 
-from collections import defaultdict
 
 from dataloaders.train import CorePlaceDataset
 from dataloaders.val import load_val_dataset
@@ -24,7 +24,7 @@ class CorePlaceDataModule(LightningDataModule):
         val_dataset_names: List[str] = None,
     ):
         super().__init__()
-        self.dataconfig = dataconfig
+        self.dataconfig = self._load_dataconfig(dataconfig)
         # Default transform if none provided - converts PIL to tensor
         self.transform = self._default_transform(image_size)
         self.batch_size = batch_size
@@ -65,22 +65,21 @@ class CorePlaceDataModule(LightningDataModule):
             val_dataset_names=val_dataset_names,
         )
 
-    def _load_dataconfig(self):
-        if isinstance(self.dataconfig, str):
+    def _load_dataconfig(self, dataconfig):
+        if isinstance(dataconfig, str):
             assert os.path.exists(
-                self.dataconfig
-            ), f"Dataconfig file {self.dataconfig} does not exist"
-            return pd.read_pickle(self.dataconfig)
-        return self.dataconfig
+                dataconfig
+            ), f"Dataconfig file {dataconfig} does not exist"
+            return pd.read_pickle(dataconfig)
+        return dataconfig
 
     def setup(self, stage: Optional[str] = None):
-        self.dataconfig = self._load_dataconfig()
+
         self.dataset = CorePlaceDataset(
             self.dataconfig,
             transform=self.transform,
             num_images_per_place=self.num_images_per_place,
         )
-        
 
     def train_dataloader(self):
         return DataLoader(
@@ -124,8 +123,13 @@ def test_datamodule(dataconfig_path: str):
         ]
     )
 
-    dataloader = CorePlaceDataModule.from_dataconfig(
-        dataconfig_path, batch_size=10, num_images_per_place=10
+    dataloader = CorePlaceDataModule.from_config(
+        {
+            "dataconfig": "registry/coreplacesets/baseline.pkl",
+            "num_images_per_place": 5,
+            "val_dataset_names": ["Amstertime"],
+            "batch_size": 4,
+        }
     )
     dataloader.setup()
     batch = next(iter(dataloader.train_dataloader()))
@@ -177,7 +181,8 @@ def test_datamodule(dataconfig_path: str):
             ax.axis("off")
 
     plt.tight_layout()
-    plt.show()
+    os.makedirs("tmp", exist_ok=True)
+    plt.savefig("tmp/train_dataloader.png")
 
     # Print summary statistics
     print("\n" + "=" * 50)
@@ -192,4 +197,4 @@ def test_datamodule(dataconfig_path: str):
 
 
 if __name__ == "__main__":
-    test_datamodule("registry/datasets/test.pkl")
+    test_datamodule("registry/coreplacesets/baseline.pkl")

@@ -5,7 +5,8 @@ import faiss
 import numpy as np
 from pytorch_lightning import LightningModule
 from pytorch_metric_learning import losses, miners
-from pytorch_metric_learning.distances import CosineSimilarity, DotProductSimilarity
+from pytorch_metric_learning.distances import (CosineSimilarity,
+                                               DotProductSimilarity)
 from torch.nn import Linear
 from torch.optim import AdamW
 
@@ -23,13 +24,16 @@ def recallatk(
     index.add(database_embeddings)
     _, I = index.search(query_embeddings, max(recallatks))
     results = {}
-    num_queries = len(query_embeddings)
+    num_queries = query_embeddings.shape[0]
     for k in recallatks:
         I_k = I[:, :k]  # Top-k predictions
         success = 0
         for i in range(num_queries):
-            if np.isin(I_k[i], groundtruth[i]).any():
-                success += 1
+            if len(groundtruth[i]) > 0:
+                if np.isin(I_k[i], groundtruth[i]).any():
+                    success += 1
+            else:
+                num_queries -= 1
         results[k] = success / num_queries
     return results
 
@@ -85,7 +89,9 @@ class CorePlaceModel(LightningModule):
 
     def configure_optimizers(self):
         return AdamW(
-            self.parameters(), lr=self.learning_rate, weight_decay=self.weight_decay
+            self.arch.parameters(),
+            lr=self.learning_rate,
+            weight_decay=self.weight_decay,
         )
 
     def training_step(self, batch):
@@ -94,13 +100,34 @@ class CorePlaceModel(LightningModule):
         pairs = self.miner_fn(descs, labels)
         loss = self.loss_fn(descs, labels, pairs)
         self.log("train_loss", loss)
-        return loss 
+        return loss
+
+    def on_fit_start(self):
+        datamodule = self.trainer.datamodule
+        class_counts = datamodule.dataconfig["class_id"].value_counts()
+
+        # Log as hyperparameters (appears in W&B config)
+        hparams = {
+            "dataset/num_classes": class_counts.size,
+            "dataset/min_per_class": int(class_counts.min()),
+            "dataset/max_per_class": int(class_counts.max()),
+            "dataset/avg_per_class": float(class_counts.mean()),
+            "dataset/median_per_class": float(class_counts.median()),
+            "dataset/std_per_class": float(class_counts.std()),
+            "dataset/num_images": int(class_counts.sum()),
+        }
+
+        # Option 1: Use log_hyperparams (good for config-like values)
+        self.logger.log_hyperparams(hparams)
 
     def on_validation_epoch_start(self):
         val_loaders = self.trainer.val_dataloaders
         self.embeddings = {}
         for idx, loader in enumerate(val_loaders):
             dataset = loader.dataset
+            assert len(dataset.query) == len(
+                dataset.groundtruth()
+            ), "Number of queries and groundtruth must be the same"
             self.embeddings[idx] = np.empty(
                 (len(dataset), self.desc_dim), dtype=np.float16
             )
@@ -118,8 +145,8 @@ class CorePlaceModel(LightningModule):
         val_loaders = self.trainer.val_dataloaders
         for idx, loader in enumerate(val_loaders):
             dataset = loader.dataset
-            query_embeddings = self.embeddings[idx][dataset.n_query :]
-            database_embeddings = self.embeddings[idx][: dataset.n_query]
+            query_embeddings = self.embeddings[idx][: dataset.n_query]
+            database_embeddings = self.embeddings[idx][dataset.n_query :]
             groundtruth = dataset.groundtruth()
             recalls = recallatk(
                 query_embeddings, database_embeddings, groundtruth, self.recallatks

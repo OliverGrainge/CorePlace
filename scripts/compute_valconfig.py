@@ -57,8 +57,8 @@ def create_groundtruth_pickle(dataset_folder, positive_dist_threshold, output_pa
     """
 
     # Construct full paths
-
-    database_path = os.path.join(dataset_folder, "images", "test", "database")
+    database_folder = "gallery" if "svox" in dataset_folder else "database"
+    database_path = os.path.join(dataset_folder, "images", "test", database_folder)
     queries_path = os.path.join(dataset_folder, "images", "test", "queries")
 
     # Read image paths
@@ -95,6 +95,9 @@ def create_groundtruth_pickle(dataset_folder, positive_dist_threshold, output_pa
     ]
 
     # Create dictionary
+    assert len(queries_paths_relative) == len(
+        positives_per_query
+    ), "Number of queries and groundtruth must be the same"
     groundtruth_dict = {
         "dataset_folder": dataset_folder,
         "query": queries_paths_relative,

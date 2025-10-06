@@ -1,11 +1,10 @@
 import os
 import pickle
-
+from typing import Union
 
 from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import transforms
-from typing import Union
 
 
 class ValDataset(Dataset):
@@ -17,11 +16,12 @@ class ValDataset(Dataset):
     ):
         self.path = os.path.join(root, valconfig_name + ".pkl")
         self.query, self.database, self.gt, self.dataset_folder = self._read_pkl()
-        self.transform = transform if transform is not None else self._default_transform()
+        self.transform = (
+            transform if transform is not None else self._default_transform()
+        )
         self.n_query = len(self.query)
         self.n_database = len(self.database)
         self.images = self.query + self.database
-       
 
     def _default_transform(self):
         return transforms.Compose(
@@ -55,8 +55,15 @@ class ValDataset(Dataset):
         assert len(valconfig["query"]) == len(
             valconfig["groundtruth"]
         ), f"Valconfig file {self.path} does not have the same number of query andgroundtruth"
-        assert ("dataset_folder" in valconfig.keys()), f"Valconfig file {self.path} does not contain a dataset_folder key"
-        return valconfig["query"], valconfig["database"], valconfig["groundtruth"], valconfig["dataset_folder"]
+        assert (
+            "dataset_folder" in valconfig.keys()
+        ), f"Valconfig file {self.path} does not contain a dataset_folder key"
+        return (
+            valconfig["query"],
+            valconfig["database"],
+            valconfig["groundtruth"],
+            valconfig["dataset_folder"],
+        )
 
     def __len__(self):
         return self.n_query + self.n_database

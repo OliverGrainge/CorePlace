@@ -1,13 +1,31 @@
 import sys
 
+import matplotlib.pyplot as plt
+from dotenv import load_dotenv
+
+load_dotenv()
+
+import os
+
 import pandas as pd
 
 from pipeline import CorePlacePipeline
 from utils import load_config
 
 
-def save_dataconfig(dataconfig: pd.DataFrame, name: str):
-    pd.to_pickle(dataconfig, f"registry/datasets/{name}.pkl")
+def save_dataconfig(pipe_state: dict, name: str):
+    dataconfig = pipe_state["dataconfig"]
+    os.makedirs(f"registry/coreplacesets/{name}/", exist_ok=True)
+    pd.to_pickle(dataconfig, f"registry/coreplacesets/{name}/dataconfig.pkl")
+    print("\n\n  PLOTS \n")
+    for i, plot_info in enumerate(pipe_state["plots"]):
+        fig = plot_info["figure"]
+        plot_name = plot_info.get("name", i)
+        # Save the figure
+        save_path = f"registry/coreplacesets/{name}/{plot_name}.png"
+        fig.savefig(save_path, dpi=300, bbox_inches="tight")
+        plt.close(fig)  # Close after saving
+        print(f"    ✓ {plot_name}.png")
     print_summary(dataconfig, name)
 
 
@@ -47,8 +65,7 @@ def main():
 
     pipeline = CorePlacePipeline.from_config(config)
     pipe_state = pipeline.run()
-    dataconfig = pipe_state["dataconfig"]
-    save_dataconfig(dataconfig, name)
+    save_dataconfig(pipe_state, name)
 
 
 if __name__ == "__main__":

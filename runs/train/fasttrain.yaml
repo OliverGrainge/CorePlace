@@ -7,26 +7,21 @@ CorePlaceModel:
   recallatks: 
     - 1
 
-
 CorePlaceDataModule: 
-  dataconfig: registry/datasets/test_curate.pkl
-  image_size: 128
-  batch_size: 4
-  num_workers: 0
+  # dataconfig: will be specified via command line
+  image_size: 256
+  batch_size: 32
+  num_workers: 8
   num_images_per_place: 4
   val_dataset_names: 
-    - Sped 
-    - Amstertime
-
-
+    - Pitts30k
 
 Trainer: 
-  max_steps: 10000 
+  max_steps: 8000
+  val_check_interval: 250
+  check_val_every_n_epoch: null
   gradient_clip_val: 1.0
   num_sanity_val_steps: 0
-  #limit_val_batches: 10
-  limit_train_batches: 10
 
-Logger: True 
-Checkpoint: True
-
+Logger: True
+Checkpoint: False

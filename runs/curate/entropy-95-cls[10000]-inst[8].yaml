@@ -1,0 +1,32 @@
+pipeline:
+  - step: ReadGsvCities
+    params:
+      gsv_cities_path: /home/oliver/datasets_drive/vpr_datasets/gsv-cities
+      cities: 
+        - London 
+        - Boston
+        - WashingtonDC
+        - Osaka
+        - Rome
+        - Chicago
+        - Medellin
+        - PRS
+
+  - step: Entropy
+    params: 
+      image_size: 224
+
+  
+  - step: Sampler
+    params:
+      sampling_field: entropy
+      min_instances_per_class: 8
+      class_percentile:
+        - 0 
+        - 95
+
+  - step: Sampler  
+    params:
+      num_classes: 10000
+      num_instances_per_class: 8
+      

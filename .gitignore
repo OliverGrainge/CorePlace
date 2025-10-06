@@ -5,3 +5,4 @@
 *.pyc 
 *.ckpt
 wandb/
+pipeline/cache/

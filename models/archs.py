@@ -8,6 +8,13 @@ def get_arch(arch_name: str, pretrained: bool = True, desc_dim: int = 2048):
     arch_name = arch_name.lower()
     if arch_name == "resnet50gem" and pretrained:
         return ResNet50Gem(desc_dim)
+    elif arch_name == "eigenplaces":
+        return torch.hub.load(
+            "gmberton/eigenplaces",
+            "get_trained_model",
+            backbone="ResNet50",
+            fc_output_dim=desc_dim,
+        )
     else:
         raise ValueError(f"Arch {arch_name} not supported")
 

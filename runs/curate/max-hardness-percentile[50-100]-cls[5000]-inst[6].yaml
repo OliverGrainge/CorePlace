@@ -1,0 +1,37 @@
+pipeline:
+  - step: ReadGsvCities
+    params:
+      gsv_cities_path: /home/oliver/datasets_drive/vpr_datasets/gsv-cities
+      cities: 
+        - London 
+        - Boston
+        - WashingtonDC
+        - Osaka
+        - Rome
+        - Chicago
+        - Medellin
+        - PRS
+
+  - step: Embeddings 
+    params:
+      model_name: EigenPlaces
+      batch_size: 128
+      num_workers: 12
+
+  - step: MultiSimilarityHardness
+    params: 
+      batch_size: 256
+  
+  - step: Sampler
+    params:
+      sampling_field: max_hardness
+      min_instances_per_class: 8
+      class_percentile:
+        - 50
+        - 100
+
+  - step: Sampler  
+    params:
+      num_classes: 5000
+      num_instances_per_class: 6
+      

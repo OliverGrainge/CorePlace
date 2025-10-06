@@ -1,6 +1,8 @@
 
 
 val_datasets: 
-  Sped: "/Users/olivergrainge/datasets/VPR-datasets-downloader/datasets/sped"
-  Eynsham: "/Users/olivergrainge/datasets/VPR-datasets-downloader/datasets/eynsham"
-  Amstertime: "/Users/olivergrainge/datasets/VPR-datasets-downloader/datasets/amstertime"
+  Amstertime: "/home/oliver/datasets_drive/vpr_datasets/VPR-datasets-downloader/datasets/amstertime"
+  Pitts30k: "/home/oliver/datasets_drive/vpr_datasets/VPR-datasets-downloader/datasets/pitts30k"
+  Tokyo247: "/home/oliver/datasets_drive/vpr_datasets/VPR-datasets-downloader/datasets/tokyo247"
+  Eynsham: "/home/oliver/datasets_drive/vpr_datasets/VPR-datasets-downloader/datasets/eynsham"
+  SVOX: "/home/oliver/datasets_drive/vpr_datasets/VPR-datasets-downloader/datasets/svox"

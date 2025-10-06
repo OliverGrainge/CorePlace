@@ -10,6 +10,7 @@ from torch import hub
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 from tqdm import tqdm
+import hashlib
 
 from .base import CorePlaceStep
 
@@ -80,27 +81,40 @@ class Embeddings(CorePlaceStep):
         self._tempfile = None  # Will hold the NamedTemporaryFile object
         self.device = self._get_device()
 
+        self.cache_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cache")
+        os.makedirs(self.cache_path, exist_ok=True)
+
     def run(self, pipe_state: dict) -> dict:
         dataconfig = pipe_state["dataconfig"]
+
+        # Check cache first
+        cache_key = self._compute_cache_key(dataconfig)
+        cache_path = self._get_cache_path(cache_key)
+
+        if os.path.exists(cache_path):
+            pipe_state["embeddings"] = np.memmap(
+                cache_path,
+                dtype=np.float16,
+                mode="r",
+                shape=(len(dataconfig), self.desc_size),
+            )
+            return pipe_state
+
+       # Otherwise compute embeddings (existing code)
         dataset = EmbeddingDataset(dataconfig, self.transform)
         dataloader = DataLoader(
             dataset, batch_size=self.batch_size, num_workers=self.num_workers
         )
-
+        
         self._prepare_model()
-
-        # Create a temporary file for the embeddings
-
-        embeddings_path = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), "cache/embeddings.dat"
-        )
-        os.makedirs(os.path.dirname(embeddings_path), exist_ok=True)
+        
         embeddings = np.memmap(
-            embeddings_path,
+            cache_path,  # Use cache_path instead of fixed path
             dtype=np.float16,
             mode="w+",
             shape=(len(dataconfig), self.desc_size),
         )
+        
         self.model = self.model.to(self.device)
         for batch in tqdm(dataloader, desc="Embedding images"):
             images, indices = batch
@@ -108,10 +122,10 @@ class Embeddings(CorePlaceStep):
             with torch.no_grad():
                 desc = self.model(images).cpu().detach().numpy().astype(np.float16)
                 embeddings[indices.numpy()] = desc
-
+        
         embeddings.flush()
         pipe_state["embeddings"] = np.memmap(
-            embeddings_path,
+            cache_path,
             dtype=np.float16,
             mode="r",
             shape=(len(dataconfig), self.desc_size),
@@ -119,6 +133,25 @@ class Embeddings(CorePlaceStep):
         self.model = self.model.cpu()
         del images, indices, desc
         return pipe_state
+
+    def _compute_cache_key(self, dataconfig: pd.DataFrame) -> str:
+        """Compute a hash of the image paths to use as cache key"""
+        # Sort to ensure consistent hash regardless of order
+        image_paths = sorted(dataconfig["image_path"].tolist())
+        paths_str = "|".join(image_paths)
+        # Include model_name to invalidate cache if model changes
+        cache_str = f"{self.model_name}|{paths_str}"
+        return hashlib.md5(cache_str.encode()).hexdigest()
+
+
+    def _get_cache_path(self, cache_key: str) -> str:
+        """Get the path for cached embeddings"""
+        cache_dir = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "cache"
+        )
+        os.makedirs(cache_dir, exist_ok=True)
+        return os.path.join(cache_dir, f"embeddings_{cache_key}.dat")
+
 
     def _get_device(self):
         if torch.backends.mps.is_available():
