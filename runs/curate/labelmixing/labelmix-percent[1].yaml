@@ -19,4 +19,8 @@ pipeline:
   - step: LabelMixer 
     params: 
       rate: 0.01
+
+  - step: Sampler  
+    params:
+      min_instances_per_class: 4
       

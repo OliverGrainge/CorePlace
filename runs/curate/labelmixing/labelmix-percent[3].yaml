@@ -23,4 +23,6 @@ pipeline:
   - step: Sampler  
     params:
       min_instances_per_class: 4
+
+      
       
