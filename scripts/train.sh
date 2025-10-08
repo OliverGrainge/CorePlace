@@ -1,9 +1,13 @@
 
 
-python curate.py runs/curate/hard-class-percentile-[0-90].yaml
+python train.py runs/train/fasttrain.yaml --dataconfig registry/coreplacesets/sum-hardness-percentile[0-50]-cls[5000]-inst[6]/dataconfig.pkl
+python train.py runs/train/fasttrain.yaml --dataconfig registry/coreplacesets/sum-hardness-percentile[0-50]-cls[7500]-inst[7]/dataconfig.pkl
+python train.py runs/train/fasttrain.yaml --dataconfig registry/coreplacesets/sum-hardness-percentile[0-50]-cls[10000]-inst[8]/dataconfig.pkl
 
-python train.py runs/train/fasttrain.yaml --dataconfig registry/coreplacesets/hard-class-percentile-[0-90].pkl
-python train.py runs/train/fasttrain.yaml --dataconfig registry/coreplacesets/poshard-class-percentile-[0-90].pkl
+python train.py runs/train/fasttrain.yaml --dataconfig registry/coreplacesets/sum-hardness-percentile[25-75]-cls[5000]-inst[6]/dataconfig.pkl
+python train.py runs/train/fasttrain.yaml --dataconfig registry/coreplacesets/sum-hardness-percentile[25-75]-cls[7500]-inst[7]/dataconfig.pkl
+python train.py runs/train/fasttrain.yaml --dataconfig registry/coreplacesets/sum-hardness-percentile[25-75]-cls[10000]-inst[8]/dataconfig.pkl
 
-python train.py runs/train/fasttrain.yaml --dataconfig registry/coreplacesets/hard-class-percentile-[50-75].pkl
-python train.py runs/train/fasttrain.yaml --dataconfig registry/coreplacesets/hard-class-percentile-[25-50].pkl
+python train.py runs/train/fasttrain.yaml --dataconfig registry/coreplacesets/sum-hardness-percentile[50-100]-cls[5000]-inst[6]/dataconfig.pkl
+python train.py runs/train/fasttrain.yaml --dataconfig registry/coreplacesets/sum-hardness-percentile[50-100]-cls[7500]-inst[7]/dataconfig.pkl
+python train.py runs/train/fasttrain.yaml --dataconfig registry/coreplacesets/sum-hardness-percentile[50-100]-cls[10000]-inst[8]/dataconfig.pkl

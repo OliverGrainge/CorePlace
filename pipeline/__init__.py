@@ -6,6 +6,7 @@ from pipeline.hardness import MultiSimilarityHardness
 from pipeline.sampler import Sampler
 from pipeline.read_gsvcities import ReadGsvCities
 from pipeline.entropy import Entropy
+from pipeline.labelmixer import LabelMixer
 
 
 def load_step(step_name: str, **kwargs) -> CorePlaceStep:
@@ -20,6 +21,8 @@ def load_step(step_name: str, **kwargs) -> CorePlaceStep:
         return Sampler(**kwargs)
     elif step_name == "entropy":
         return Entropy(**kwargs)
+    elif step_name == "labelmixer":
+        return LabelMixer(**kwargs)
     else:
         raise ValueError(f"Step {step_name} not found")
 

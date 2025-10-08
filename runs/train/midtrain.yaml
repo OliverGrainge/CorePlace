@@ -1,0 +1,29 @@
+CorePlaceModel: 
+  arch_name: resnet50gem
+  pretrained: True
+  desc_dim: 1024
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  recallatks: 
+    - 1
+    - 5
+    - 10
+
+CorePlaceDataModule: 
+  # dataconfig: will be specified via command line
+  image_size: 256
+  batch_size: 32
+  num_workers: 8
+  num_images_per_place: 4
+  val_dataset_names: 
+    - Pitts30k
+
+Trainer: 
+  max_steps: 20000
+  val_check_interval: 500
+  check_val_every_n_epoch: null
+  gradient_clip_val: 1.0
+  num_sanity_val_steps: 0
+
+Logger: True
+Checkpoint: False

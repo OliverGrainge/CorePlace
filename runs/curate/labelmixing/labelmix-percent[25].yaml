@@ -1,0 +1,27 @@
+pipeline:
+  - step: ReadGsvCities
+    params:
+      gsv_cities_path: /home/oliver/datasets_drive/vpr_datasets/gsv-cities
+      cities: 
+        - London 
+        - Boston
+        - WashingtonDC
+        - Osaka
+        - Rome
+        - Chicago
+        - Medellin
+        - PRS
+
+  - step: Sampler  
+    params:
+      min_instances_per_class: 4
+
+  - step: LabelMixer 
+    params: 
+      rate: 0.25
+
+  - step: Sampler  
+    params:
+      min_instances_per_class: 4
+
+      

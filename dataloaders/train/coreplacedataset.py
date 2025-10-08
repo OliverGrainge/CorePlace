@@ -10,22 +10,22 @@ class CorePlaceDataset(Dataset):
         self, dataconfig: pd.DataFrame, transform=None, num_images_per_place: int = 10
     ):
         self.dataconfig = dataconfig
-        self.unique_ids = dataconfig["place_id"].unique()
+        self.unique_ids = dataconfig["class_id"].unique()
         self.num_images_per_place = num_images_per_place
         self.transform = transform
 
-        # Precompute indices for each place_id for efficient sampling
+        # Precompute indices for each class_id for efficient sampling
         self.placeid_to_indices = {
-            place_id: dataconfig.index[dataconfig["place_id"] == place_id].tolist()
-            for place_id in self.unique_ids
+            class_id: dataconfig.index[dataconfig["class_id"] == class_id].tolist()
+            for class_id in self.unique_ids
         }
 
     def __len__(self):
         return len(self.unique_ids)
 
     def __getitem__(self, index):
-        place_id = self.unique_ids[index]
-        indices = self.placeid_to_indices[place_id]
+        class_id = self.unique_ids[index]
+        indices = self.placeid_to_indices[class_id]
         n_images = len(indices)
         n_samples = self.num_images_per_place
 
@@ -42,6 +42,8 @@ class CorePlaceDataset(Dataset):
                 img = self.transform(img)
             images.append(img)
         images = torch.stack(images)
-        labels = torch.full((n_samples,), place_id, dtype=torch.long)
+        # Use class_id from dataconfig instead of class_id to enable label mixing
+        class_id = self.dataconfig.loc[sampled_indices[0], "class_id"]
+        labels = torch.full((n_samples,), class_id, dtype=torch.long)
 
         return images, labels

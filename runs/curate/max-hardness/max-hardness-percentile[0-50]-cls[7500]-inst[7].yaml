@@ -25,7 +25,7 @@ pipeline:
   - step: Sampler
     params:
       sampling_field: max_hardness
-      min_instances_per_class: 8
+      min_instances_per_class: 7
       class_percentile:
         - 0 
         - 50

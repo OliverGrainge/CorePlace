@@ -12,22 +12,15 @@ pipeline:
         - Medellin
         - PRS
 
-  - step: Entropy
-    params: 
-      image_size: 224
-
-  
-  - step: Sampler
-    params:
-      sampling_field: entropy
-      min_instances_per_class: 7
-      class_percentile:
-        - 0 
-        - 95
-
   - step: Sampler  
     params:
-      min_instances_per_class: 7
-      num_classes: 7500
-      num_instances_per_class: 7
+      min_instances_per_class: 4
+
+  - step: LabelMixer 
+    params: 
+      rate: 0.1
+  
+  - step: Sampler  
+    params:
+      min_instances_per_class: 4
       

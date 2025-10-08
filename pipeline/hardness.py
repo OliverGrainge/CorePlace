@@ -113,6 +113,7 @@ class MultiSimilarityHardness(CorePlaceStep):
             dataconfig["neg_sum_hardness"] = cached_data["neg_sum_hardness"]
             dataconfig["pos_max_hardness"] = cached_data["pos_max_hardness"]
             dataconfig["neg_max_hardness"] = cached_data["neg_max_hardness"]
+            dataconfig["sum_hardness"] = cached_data["pos_sum_hardness"] + cached_data["neg_sum_hardness"]
             dataconfig["pos_max_hardness_idx"] = cached_data["pos_max_hardness_idx"]
             dataconfig["neg_max_hardness_idx"] = cached_data["neg_max_hardness_idx"]
             
@@ -189,6 +190,7 @@ class MultiSimilarityHardness(CorePlaceStep):
         dataconfig["pos_max_hardness"] = pos_max_hardness
         dataconfig["neg_max_hardness"] = neg_max_hardness
         dataconfig["max_hardness"] = pos_max_hardness + neg_max_hardness
+        dataconfig["sum_hardness"] = pos_sum_hardness + neg_sum_hardness
         dataconfig["mean_hardness"] = (pos_sum_hardness + neg_sum_hardness) / 2
         dataconfig["pos_sum_hardness_mean"] = pos_sum_hardness.mean()
         dataconfig["pos_max_hardness_idx"] = pos_max_hardness_idx

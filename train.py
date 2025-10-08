@@ -49,7 +49,7 @@ def main() -> None:
     # Setup logger (optional)
     logger = None
     if config.Logger == True:
-        name = args.dataconfig.split("/")[-1].split(".")[0]
+        name = args.dataconfig.split("/")[-2].split(".")[0]
         logger = WandbLogger(project="CorePlace", name=name)
 
     # Setup callbacks (only add if present in config)

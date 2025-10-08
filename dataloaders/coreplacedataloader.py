@@ -41,9 +41,9 @@ class CorePlaceDataModule(LightningDataModule):
                 transforms.Resize(image_size),
                 transforms.CenterCrop(image_size),
                 transforms.ToTensor(),
-                transforms.Normalize(
-                    mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
-                ),
+                #transforms.Normalize(
+                #    mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
+                #),
             ]
         )
 
@@ -55,7 +55,6 @@ class CorePlaceDataModule(LightningDataModule):
         num_workers = config.get("num_workers", 0)
         num_images_per_place = config.get("num_images_per_place", 100)
         val_dataset_names = config.get("val_dataset_names", None)
-
         return cls(
             dataconfig=dataconfig,
             image_size=image_size,
