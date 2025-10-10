@@ -24,6 +24,10 @@ pipeline:
 
   - step: ConfusionMixer
     params:
-      rate: 0.1
+      rate: 0.3
+
+  - step: Sampler 
+    params:
+      min_instances_per_class: 4
   
       

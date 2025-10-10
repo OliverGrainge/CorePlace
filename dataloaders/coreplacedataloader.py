@@ -20,7 +20,7 @@ class CorePlaceDataModule(LightningDataModule):
         image_size: int = 256,
         batch_size: int = 32,
         num_workers: int = 0,
-        num_images_per_place: int = 100,
+        num_images_per_place: int = 4,
         val_dataset_names: List[str] = None,
     ):
         super().__init__()
@@ -41,9 +41,9 @@ class CorePlaceDataModule(LightningDataModule):
                 transforms.Resize(image_size),
                 transforms.CenterCrop(image_size),
                 transforms.ToTensor(),
-                #transforms.Normalize(
-                #    mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
-                #),
+                transforms.Normalize(
+                    mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
+                ),
             ]
         )
 
@@ -86,6 +86,7 @@ class CorePlaceDataModule(LightningDataModule):
             batch_size=self.batch_size,
             num_workers=self.num_workers,
             collate_fn=self._collate_fn,
+            shuffle=True,
         )
 
     def val_dataloader(self):

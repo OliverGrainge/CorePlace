@@ -7,6 +7,10 @@ from pipeline.sampler import Sampler
 from pipeline.read_gsvcities import ReadGsvCities
 from pipeline.entropy import Entropy
 from pipeline.labelmixer import LabelMixer
+from pipeline.confusionmixer import ConfusionMixer
+from pipeline.blurdetection import BlurDetection
+from pipeline.edgedensity import EdgeDensity
+from pipeline.colourvariance import ColorVariance
 
 
 def load_step(step_name: str, **kwargs) -> CorePlaceStep:
@@ -23,6 +27,14 @@ def load_step(step_name: str, **kwargs) -> CorePlaceStep:
         return Entropy(**kwargs)
     elif step_name == "labelmixer":
         return LabelMixer(**kwargs)
+    elif step_name == "confusionmixer":
+        return ConfusionMixer(**kwargs)
+    elif step_name == "blurdetection":
+        return BlurDetection(**kwargs)
+    elif step_name == "edgedensity":
+        return EdgeDensity(**kwargs)
+    elif step_name == "colourvariance":
+        return ColorVariance(**kwargs)
     else:
         raise ValueError(f"Step {step_name} not found")
 

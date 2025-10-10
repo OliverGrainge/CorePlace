@@ -12,11 +12,11 @@ class LabelMixer(CorePlaceStep):
             corruption_rate: Percentage of samples (0.0 to 1.0) that will have their labels randomly shuffled.
         """
         self.rate = rate
-
+        
     def run(self, pipe_state: dict) -> dict:
         dataconfig = pipe_state["dataconfig"]
         
-        # Calculate number of samples to corrupt
+        # Calculate number of samples to corruptc
         n_samples = len(dataconfig)
         n_samples_to_corrupt = int(n_samples * self.rate)
         

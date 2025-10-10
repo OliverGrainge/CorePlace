@@ -57,9 +57,8 @@ if __name__ == "__main__":
             ax.imshow(img, cmap='gray' if len(img.shape) == 2 else None)
             ax.axis('off')
             
-            # Add title to first image of each row
-            if col_idx == 0:
-                ax.set_title(f'Class {class_label}', fontsize=12, fontweight='bold', loc='left')
+            # Add class label to each image
+            ax.set_title(f'Class {class_label}', fontsize=10, fontweight='bold')
     
     plt.tight_layout()
     plt.savefig('batch_visualization_by_class.png', dpi=150, bbox_inches='tight')

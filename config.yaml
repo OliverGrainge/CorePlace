@@ -6,3 +6,4 @@ val_datasets:
   Tokyo247: "/home/oliver/datasets_drive/vpr_datasets/VPR-datasets-downloader/datasets/tokyo247"
   Eynsham: "/home/oliver/datasets_drive/vpr_datasets/VPR-datasets-downloader/datasets/eynsham"
   SVOX: "/home/oliver/datasets_drive/vpr_datasets/VPR-datasets-downloader/datasets/svox"
+  MSLS: "/home/oliver/datasets_drive/vpr_datasets/msls"

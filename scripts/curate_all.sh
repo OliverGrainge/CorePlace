@@ -2,7 +2,7 @@
 
 set -e
 
-for config in runs/curate/*.yaml; do
+for config in runs/curate/labelmixing/*.yaml; do
     config_base=$(basename "$config" .yaml)
     pkl_file="registry/coreplacesets/${config_base}.pkl"
     if [ -f "$pkl_file" ]; then

@@ -12,18 +12,19 @@ pipeline:
         - Medellin
         - PRS
 
-  - step: Embeddings 
-    params:
-      model_name: EigenPlaces
-      batch_size: 128
-      num_workers: 12
 
-  - step: MultiSimilarityHardness
+  - step: ColourVariance
     params: 
-      batch_size: 256
+      image_size: 256
 
-  - step: ConfusionMixer
-    params:
-      rate: 0.1
-  
-      
+
+  - step: Sampler 
+    params: 
+      sampling_field: colour_variance
+      min_instances_per_class: 4
+      instance_percentile:
+        - 3
+        - 100
+
+    
+

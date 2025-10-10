@@ -8,6 +8,8 @@ def get_arch(arch_name: str, pretrained: bool = True, desc_dim: int = 2048):
     arch_name = arch_name.lower()
     if arch_name == "resnet50gem" and pretrained:
         return ResNet50Gem(desc_dim)
+    elif arch_name == "resnet18gem" and pretrained:
+        return ResNet18Gem(desc_dim)
     elif arch_name == "eigenplaces":
         return torch.hub.load(
             "gmberton/eigenplaces",
@@ -75,3 +77,66 @@ class ResNet50Gem(nn.Module):
         pooled = self.gem(features)
         descriptor = self.fc(pooled)
         return F.normalize(descriptor, p=2, dim=1)
+
+
+
+class ResNet18Gem(nn.Module): 
+    def __init__(self, descriptor_dim: int=512): 
+        resnet = torchvision.models.resnet18(weights="IMAGENET1K_V1")
+
+        self.conv1 = resnet.conv1
+        self.bn1 = resnet.bn1
+        self.relu = resnet.relu
+        self.maxpool = resnet.maxpool
+        self.layer1 = resnet.layer1
+        self.layer2 = resnet.layer2
+        self.layer3 = resnet.layer3
+        self.layer4 = resnet.layer4
+
+        self.gem = GeMPool()
+        self.fc = nn.Linear(512, descriptor_dim)
+
+    def forward(self, x): 
+        x = self.conv1(x)
+        x = self.model.bn1(x)
+        x = self.relu(x)
+        x = self.maxpool(x)
+        x = self.layer1(x)
+        x = self.layer2(x)
+        x = self.layer3(x)
+        x = self.gem(x)
+        x = self.fc(x)
+        return F.normalize(x, p=2, dim=1)
+
+
+
+class ResNet18Gem(nn.Module): 
+    def __init__(self, descriptor_dim: int=512): 
+        super().__init__()
+        resnet = torchvision.models.resnet18(weights="IMAGENET1K_V1")
+
+        self.conv1 = resnet.conv1
+        self.bn1 = resnet.bn1
+        self.relu = resnet.relu
+        self.maxpool = resnet.maxpool
+        self.layer1 = resnet.layer1
+        self.layer2 = resnet.layer2
+        self.layer3 = resnet.layer3
+        self.layer4 = resnet.layer4
+
+        self.gem = GeMPool()
+        self.fc = nn.Linear(512, descriptor_dim)
+
+    def forward(self, x): 
+        x = self.conv1(x)
+        x = self.bn1(x)
+        x = self.relu(x)
+        x = self.maxpool(x)
+        x = self.layer1(x)
+        x = self.layer2(x)
+        x = self.layer3(x)
+        x = self.layer4(x)
+        x = self.gem(x)
+        x = self.fc(x)
+        return F.normalize(x, p=2, dim=1)
+
