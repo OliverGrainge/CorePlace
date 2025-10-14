@@ -1,5 +1,4 @@
 
-
 val_datasets: 
   Amstertime: "/home/oliver/datasets_drive/vpr_datasets/VPR-datasets-downloader/datasets/amstertime"
   Pitts30k: "/home/oliver/datasets_drive/vpr_datasets/VPR-datasets-downloader/datasets/pitts30k"

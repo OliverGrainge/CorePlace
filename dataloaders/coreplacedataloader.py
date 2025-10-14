@@ -87,6 +87,8 @@ class CorePlaceDataModule(LightningDataModule):
             num_workers=self.num_workers,
             collate_fn=self._collate_fn,
             shuffle=True,
+            persistent_workers=True,
+            pin_memory="cuda" if torch.cuda.is_available() else False,
         )
 
     def val_dataloader(self):
@@ -95,6 +97,9 @@ class CorePlaceDataModule(LightningDataModule):
                 dataset,
                 batch_size=self.batch_size * self.num_images_per_place,
                 num_workers=self.num_workers,
+                persistent_workers=True,
+                shuffle=False,
+                pin_memory="cuda" if torch.cuda.is_available() else False,
             )
             for dataset in self.val_datasets
         ]

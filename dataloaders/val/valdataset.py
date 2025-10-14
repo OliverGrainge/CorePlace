@@ -75,7 +75,7 @@ class ValDataset(Dataset):
         return img, index
 
     def __repr__(self):
-        return f"{self.path.split('/')[-1].rstrip('.pkl')}"
+        return f"{os.path.splitext(self.path.split('/')[-1])[0]}"
 
     def groundtruth(self):
         return self.gt

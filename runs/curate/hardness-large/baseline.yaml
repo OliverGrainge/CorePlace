@@ -3,13 +3,8 @@ pipeline:
     params:
       gsv_cities_path: /home/oliver/datasets_drive/vpr_datasets/gsv-cities
       cities: 
-        - London
-      
-
-  - step: Sampler  
+        - London 
+  
+  - step: Sampler
     params:
       min_instances_per_class: 4
-
-      
-
-      

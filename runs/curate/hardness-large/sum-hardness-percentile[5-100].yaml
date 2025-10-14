@@ -1,0 +1,35 @@
+pipeline:
+  - step: ReadGsvCities
+    params:
+      gsv_cities_path: /home/oliver/datasets_drive/vpr_datasets/gsv-cities
+      cities: 
+        - LosAngeles
+        - MexicoCity
+        - Rome
+        - Barcelona
+        - Chicago
+        - Madrid
+        - Miami
+        - Boston
+        - WashingtonDC
+        - Brussels
+        - London
+        - Melbourne
+
+  - step: Embeddings 
+    params:
+      model_name: MegaLoc
+      batch_size: 128
+      num_workers: 12
+
+  - step: MultiSimilarityHardness
+    params: 
+      batch_size: 256
+  
+  - step: Sampler
+    params:
+      sampling_field: sum_hardness
+      min_instances_per_class: 4
+      class_percentile:
+        - 5 
+        - 100

@@ -28,11 +28,26 @@ def get_transform(model_name: str):
             ]
         )
         return transform
+    elif model_name == "MegaLoc":
+        transform = transforms.Compose([
+            transforms.Resize(256),                    # Resize shorter side to 256
+            transforms.CenterCrop(224),                # or 518 for larger models
+            transforms.ToTensor(),                     # [0, 255] → [0, 1]
+            transforms.Normalize(
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225]
+            )
+        ])
+        return transform
+    else:
+        raise ValueError(f"Model {model_name} not supported")
 
 
 def get_desc_size(model_name: str):
     if model_name == "EigenPlaces":
         return 2048
+    elif model_name == "MegaLoc":
+        return 8448
     else:
         raise ValueError(f"Model {model_name} not supported")
 
@@ -52,6 +67,9 @@ def get_model(model_name: str):
         transform = get_transform(model_name)
         desc_size = get_desc_size(model_name)
         return model, transform, desc_size
+    elif model_name == "MegaLoc": 
+        model = torch.hub.load("gmberton/MegaLoc", "get_trained_model")
+        return model, get_transform(model_name), get_desc_size(model_name)
     else:
         raise ValueError(f"Model {model_name} not supported")
 

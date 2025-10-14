@@ -35,7 +35,7 @@ def recallatk(
                     success += 1
             else:
                 num_queries -= 1
-        results[k] = success / num_queries
+        results[k] = (success / num_queries) * 100
     return results
 
 

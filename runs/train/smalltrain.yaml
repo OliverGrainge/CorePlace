@@ -22,8 +22,8 @@ CorePlaceDataModule:
     - MSLS 
 
 Trainer: 
-  max_steps: 50000
-  val_check_interval: 10000
+  max_steps: 4000
+  val_check_interval: 4000
   check_val_every_n_epoch: null
   gradient_clip_val: 1.0
   num_sanity_val_steps: 0

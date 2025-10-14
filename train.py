@@ -49,8 +49,9 @@ def main() -> None:
     # Setup logger (optional)
     logger = None
     if config.Logger == True:
-        name = args.dataconfig.split("/")[-2].split(".")[0]
-        logger = WandbLogger(project="CorePlace", name=name)
+        project_name = args.dataconfig.split("/")[-3].split(".")[0]
+        experiment_name = args.dataconfig.split("/")[-2].split(".")[0]
+        logger = WandbLogger(project=f"CorePlace-{project_name}", name=experiment_name)
 
     # Setup callbacks (only add if present in config)
     callbacks: List[pl.Callback] = []

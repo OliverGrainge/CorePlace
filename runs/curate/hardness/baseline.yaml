@@ -1,0 +1,21 @@
+pipeline:
+  - step: ReadGsvCities
+    params:
+      gsv_cities_path: /home/oliver/datasets_drive/vpr_datasets/gsv-cities
+      cities: 
+      - LosAngeles
+      - MexicoCity
+      - Rome
+      - Barcelona
+      - Chicago
+      - Madrid
+      - Miami
+      - Boston
+      - WashingtonDC
+      - Brussels
+      - London
+      - Melbourne
+  
+  - step: Sampler
+    params:
+      min_instances_per_class: 4
